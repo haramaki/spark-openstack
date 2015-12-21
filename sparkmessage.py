@@ -1,17 +1,17 @@
 # import the requests library so we can use it to make REST calls
-import requests, json
+import requests
 
 # disable warnings about using certificate verification
 requests.packages.urllib3.disable_warnings()
 
 # the main function
-def post(person_id, person_email, room_id, text):
+def post(token, person_id, person_email, room_id, text):
     # define a variable for the hostname of Spark
     hostname = "api.ciscospark.com"
 
     # login to developer.ciscospark.com and copy your access token here
     # Never hard-code access token in production environment
-    token = "Bearer [access token]"
+    token = "Bearer " + token
 
     # add authorization to the header
     header = {"Authorization": "%s" % token, "content-type": "application/json"}
@@ -36,13 +36,13 @@ def post(person_id, person_email, room_id, text):
     # return the text value
     print(response_status)
 
-def get(message_id):
+def get(token, message_id):
         # define a variable for the hostname of Spark
     hostname = "api.ciscospark.com"
 
     # login to developer.ciscospark.com and copy your access token here
     # Never hard-code access token in production environment
-    token = "Bearer [access token]"
+    token = "Bearer "+token
 
     # add authorization to the header
     header = {"Authorization": "%s" % token}
