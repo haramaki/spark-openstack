@@ -1,7 +1,7 @@
 # import Flask
 from flask import Flask, request
 # import  custom-made modules
-import getmessage, gethosts, postmessage
+import sparkmessage
 
 # Create an instance of Flask
 app = Flask(__name__)
@@ -25,15 +25,17 @@ def webhooks():
     room_id = json["data"]["roomId"]
 
     # convert the message id into readable text
-    message = getmessage.main(message_id)
+    message = sparkmessage.get(message_id)
     print(message)
 
     # check if the message is the command to get hosts
-    if message == "GET HOSTS":
-        # get list of hosts from APIC-EM Controller
-        hosts = gethosts.main()
-        # post the list of hosts into the Spark room
-        postmessage.main(person_id, person_email, room_id, hosts)
+    if message == "Hi"
+        sparkmessage.post(person_id, person_email, room_id, "Hi")
+#    if message == "GET HOSTS":
+#        # get list of hosts from APIC-EM Controller
+#        hosts = gethosts.main()
+#        # post the list of hosts into the Spark room
+#        sparkmessage.post(person_id, person_email, room_id, hosts)
     else:
        print("do nothing")
 

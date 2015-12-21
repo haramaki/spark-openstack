@@ -5,7 +5,7 @@ import requests, json
 requests.packages.urllib3.disable_warnings()
 
 # the main function
-def main(person_id, person_email, room_id, text):
+def post(person_id, person_email, room_id, text):
     # define a variable for the hostname of Spark
     hostname = "api.ciscospark.com"
 
@@ -35,3 +35,30 @@ def main(person_id, person_email, room_id, text):
 
     # return the text value
     print(response_status)
+
+def get(message_id):
+        # define a variable for the hostname of Spark
+    hostname = "api.ciscospark.com"
+
+    # login to developer.ciscospark.com and copy your access token here
+    # Never hard-code access token in production environment
+    token = "Bearer [access token]"
+
+    # add authorization to the header
+    header = {"Authorization": "%s" % token}
+
+    # create request url using message ID
+    get_rooms_url = "https://" + hostname + "/v1/messages/" + message_id
+
+    # send the GET request and do not verify SSL certificate for simplicity of this example
+    api_response = requests.get(get_rooms_url, headers=header, verify=False)
+
+    # parse the response in json
+    response_json = api_response.json()
+
+    # get the text value from the response
+    text = response_json["text"]
+
+    # return the text value
+    return text
+
