@@ -3,6 +3,7 @@ from flask import Flask, request
 # import  custom-made modules
 import sparkmessage
 import argparse
+import prettytable
 
 # Create an instance of Flask
 app = Flask(__name__)
@@ -30,9 +31,24 @@ def webhooks():
     message = sparkmessage.get(TOKEN, message_id)
     print(message)
 
+    # create data table
+    volume = prettytable.PrettyTable(['name', 'status', 'size'])
+    volume.add_row(['volume1', 'OK', '2'])
+    volume.add_row(['volume2', 'OK', '4'])
+    print(volume)
+
+    server = prettytable.PrettyTable(['name', 'status', 'flavor', 'networks'])
+    server.add_row(['vm1', 'OK', 'm1.small', 'net01'])
+    server.add_row(['vm2', 'OK', 'm1.large', 'net02'])
+
     # check if the message is the command to get hosts
     if message == "Hi":
-        sparkmessage.post(TOKEN, person_id, person_email, room_id, "Hi")
+        sparkmessage.post(TOKEN, person_id, person_email, room_id, "Hi, How are you")
+    if message == "server list":
+        sparkmessage.post(TOKEN, person_id, person_email, room_id, server)
+    if message == "volume list":
+        sparkmessage.post(TOKEN, person_id, person_email, room_id, volume)
+
 #    if message == "GET HOSTS":
 #        # get list of hosts from APIC-EM Controller
 #        hosts = gethosts.main()

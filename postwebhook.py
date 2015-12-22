@@ -7,6 +7,7 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument("-token", default="")
     p.add_argument("-url", default="")
+    p.add_argument("-room", default="")
     args = p.parse_args()
 
     # define a variable for the hostname of Spark
@@ -29,7 +30,7 @@ def main():
     payload = {
         "resource": "messages",
         "event": "created",
-        "filter": "roomId=[room_id]",
+        "filter": "roomId="+args.room,
         "targetUrl": args.url,
         "name": "bot"
     }
