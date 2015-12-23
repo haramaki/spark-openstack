@@ -21,10 +21,10 @@ def post(token, person_id, person_email, room_id, text):
 
     # create message in Spark room
     payload = {
-        "personId" : person_id,
-        "personEmail" : person_email,
-        "roomId" : room_id,
-        "text" : text
+        "personId": person_id,
+        "personEmail": person_email,
+        "roomId": room_id,
+        "text": text
     }
 
     # create POST request do not verify SSL certificate for simplicity of this example
