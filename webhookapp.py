@@ -10,6 +10,14 @@ import oscontroller
 app = Flask(__name__)
 TOKEN = ""
 CON = {}
+HELP = """
+help                  show this message
+server create <name>  create server
+server list           list active servers
+flavor list           list flavors
+image  list           list image
+volume list           list volumes
+"""
 
 # Index page will trigger index() function
 @app.route('/')
@@ -42,10 +50,12 @@ def webhooks():
     # check if the message is the command to get hosts
     if message == "Hi":
         sparkmessage.post(TOKEN, person_id, person_email, room_id, "Hi, How are you")
-    if message == "server list":
-        reply = oscontroller.get_server(con)
-        sparkmessage.post(TOKEN, person_id, person_email, room_id, reply)
-    if message == "volume list":
+    elif message == "help"
+        sparkmessage.post(TOKEN, person_id, person_email, room_id, HELP)
+    elif message == "server list":
+        reply_msg = oscontroller.get_server(con)
+        sparkmessage.post(TOKEN, person_id, person_email, room_id, reply_msg)
+    elif message == "volume list":
         sparkmessage.post(TOKEN, person_id, person_email, room_id, volume.get_string())
     return "OK"
 
@@ -54,7 +64,7 @@ def webhooks():
 #    return TOKEN
 
 # run the application
-if __name__ == "__main__":
+def main():
     p = argparse.ArgumentParser()
     p.add_argument("-token", default="")
     p.add_argument("-url")
@@ -66,3 +76,6 @@ if __name__ == "__main__":
     TOKEN = args.token
     print (TOKEN)
     app.run(host="0.0.0.0", port=8000)
+
+if __name__ == "__main__":
+    main()
