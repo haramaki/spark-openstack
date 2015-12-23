@@ -50,7 +50,7 @@ def webhooks():
     # check if the message is the command to get hosts
     if message == "Hi":
         sparkmessage.post(TOKEN, person_id, person_email, room_id, "Hi, How are you")
-    elif message == "help"
+    elif message == "help":
         sparkmessage.post(TOKEN, person_id, person_email, room_id, HELP)
     elif message == "server list":
         reply_msg = oscontroller.get_server(con)
@@ -59,12 +59,9 @@ def webhooks():
         sparkmessage.post(TOKEN, person_id, person_email, room_id, volume.get_string())
     return "OK"
 
-# @app.route("/token", methods=['GET'])
-# def gettoken():
-#    return TOKEN
 
 # run the application
-def main():
+if __name__ == "__main__":
     p = argparse.ArgumentParser()
     p.add_argument("-token", default="")
     p.add_argument("-url")
@@ -77,5 +74,3 @@ def main():
     print (TOKEN)
     app.run(host="0.0.0.0", port=8000)
 
-if __name__ == "__main__":
-    main()
