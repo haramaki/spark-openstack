@@ -29,6 +29,13 @@ def get_volume(con):
     return result
 
 
+def get_image(con):
+    result = prettytable.PrettyTable(['name', 'status'])
+    for image in con.image.images():
+        result.add_row([image["name"], image["status"]])
+    return result.get_string()
+
+
 def create_connection(auth_url, region, project_name, username, password):
     prof = profile.Profile()
     prof.set_region(profile.Profile.ALL, region)
@@ -51,10 +58,9 @@ def main():
     p.add_argument("-password")
     args = p.parse_args()
     con = create_connection(args.url, "RegionOne", args.project, args.user, args.password)
-    delete_server(con, "vm1")
+    print(get_image(con))
 #   get_volume(con)
 #   print(get_server(con))
-
 
 
 if __name__ == '__main__':

@@ -19,6 +19,7 @@ image  list           list image
 volume list           list volumes
 """
 
+
 # Index page will trigger index() function
 @app.route('/')
 def index():
@@ -30,52 +31,78 @@ def index():
 def webhooks():
     # Get the json data
     json = request.json
-    con = oscontroller.create_connection(CON["url"], "RegionOne", CON["project"], CON["user"], CON["password"])
-
-    # parse the message id, person id, person email, and room id
-    message_id = json["data"]["id"]
-    person_id = json["data"]["personId"]
-    person_email = json["data"]["personEmail"]
-    room_id = json["data"]["roomId"]
 
     # convert the message id into readable text
-    message = sparkmessage.get(TOKEN, message_id)
-    print(message)
-
-    # create data table
-    volume = prettytable.PrettyTable(['name', 'status', 'size'])
-    volume.add_row(['volume1', 'OK', '2'])
-    volume.add_row(['volume2', 'OK', '4'])
+    sc = SparkController(CON["url"], "RegionOne", CON["project"], CON["user"], CON["password"], json, TOKEN)
+    message = sc.get_message()
 
     # check if the message is the command to get hosts
     com_list = message.split()
+    operator = com_list[0]
 
-    if com_list[0] == "Hi":
-        sparkmessage.post(TOKEN, person_id, person_email, room_id, "Hi, How are you")
-    elif com_list[0] == "help":
-        sparkmessage.post(TOKEN, person_id, person_email, room_id, HELP)
-    elif com_list[0] == "server":
+    if operator == "Hi":
+        sc.send_message("Hi How are you")
+    elif operator == "help":
+        sc.send_message(HELP)
+    elif operator == "server":
+        sc.server_control(com_list)
+    elif operator == "volume":
+        sc.volume_control(com_list)
+    elif operator == "image":
+        sc.image_control(com_list)
+    return "OK"
+
+
+class SparkController:
+    def __init__(self, url, region, project, user, password, json, token):
+        self.con = oscontroller.create_connection(url, region, project, user, password)
+        self.token = token
+        self.json = json
+
+    def get_message(self):
+        message_id = self.json["data"]["id"]
+        return sparkmessage.get(self.token, message_id)
+
+    def send_message(self, msg):
+        person_id = self.json["data"]["personId"]
+        person_email = self.json["data"]["personEmail"]
+        room_id = self.json["data"]["roomId"]
+        sparkmessage.post(self.token, person_id, person_email, room_id, msg)
+
+    def server_control(self, com_list):
         if len(com_list) == 1:
-            sparkmessage.post(TOKEN, person_id, person_email, room_id, "Please add list or create")
+            self.send_message("Please add list or create or delete")
         elif com_list[1] == "list":
-            reply_msg = oscontroller.get_server(con)
-            sparkmessage.post(TOKEN, person_id, person_email, room_id, reply_msg)
+            reply_msg = oscontroller.get_server(self.con)
+            self.send_message(reply_msg)
         elif com_list[1] == "create":
             if len(com_list) == 2:
-                sparkmessage.post(TOKEN, person_id, person_email, room_id, "Please add vm name")
+                self.send_message("Please add vm name")
             else:
-                reply_msg = oscontroller.create_server(con, com_list[2])
-                sparkmessage.post(TOKEN, person_id, person_email, room_id, reply_msg)
+                reply_msg = oscontroller.create_server(self.con, com_list[2])
+                self.send_message(reply_msg)
         elif com_list[1] == "delete":
             if len(com_list) == 2:
-                sparkmessage.post(TOKEN, person_id, person_email, room_id, "Please add vm name")
+                self.send_message("Please add vm name")
             else:
-                reply_msg = oscontroller.delete_server(con, com_list[2])
-                sparkmessage.post(TOKEN, person_id, person_email, room_id, reply_msg)
-    elif com_list[0] == "volume":
-        if com_list[1] == "list":
-            sparkmessage.post(TOKEN, person_id, person_email, room_id, volume.get_string())
-    return "OK"
+                reply_msg = oscontroller.delete_server(self.con, com_list[2])
+                self.send_message(reply_msg)
+
+    def volume_control(self, com_list):
+        if len(com_list) == 1:
+            self.send_message("Please add list")
+        elif com_list[1] == "list":
+            volume = prettytable.PrettyTable(['name', 'status', 'size'])
+            volume.add_row(['volume1', 'OK', '2'])
+            volume.add_row(['volume2', 'OK', '4'])
+            self.send_message(volume.get_string())
+
+    def image_control(self, com_list):
+        if len(com_list) == 1:
+            self.send_message("Please add list")
+        elif com_list[1] == "list":
+            reply_msg = oscontroller.get_image(self.con)
+            self.send_message(reply_msg)
 
 
 # run the application
