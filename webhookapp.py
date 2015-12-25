@@ -11,11 +11,13 @@ app = Flask(__name__)
 TOKEN = ""
 CON = {}
 HELP = """
++----------
 server create <name>  create server
 server list           list active servers
 flavor list           list flavors
 image  list           list image
 volume list           list volumes
++----------
 """
 
 
