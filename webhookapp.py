@@ -24,10 +24,10 @@ volume list           list volumes
 def index():
     return 'Hello World'
 
+
 # Webhook page will trigger webhooks() function
 @app.route("/webhook", methods=['POST'])
 def webhooks():
-
     # Get the json data
     json = request.json
     con = oscontroller.create_connection(CON["url"], "RegionOne", CON["project"], CON["user"], CON["password"])
@@ -48,7 +48,7 @@ def webhooks():
     volume.add_row(['volume2', 'OK', '4'])
 
     # check if the message is the command to get hosts
-    com_list = message.spilit()
+    com_list = message.split()
 
     if com_list[0] == "Hi":
         sparkmessage.post(TOKEN, person_id, person_email, room_id, "Hi, How are you")

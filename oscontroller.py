@@ -15,9 +15,7 @@ def get_server(con):
 def create_server(con, name):
     flavor = con.compute.find_flavor("m1.tiny")
     image = con.compute.find_image("cirros-0.3.4-x86_64")
-    print(flavor)
-    print(image)
-    con.compute.create_server(name=name, flavor=flavor, image=image)
+    return con.compute.create_server(name=name, flavor=flavor, image=image)
 
 
 def delete_server(con, name):
