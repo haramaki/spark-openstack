@@ -12,6 +12,19 @@ def get_server(con):
     return result.get_string()
 
 
+def create_server(con, name):
+    flavor = con.compute.find_flavor("m1.tiny")
+    image = con.compute.find_image("cirros-0.3.4-x86_64")
+    print(flavor)
+    print(image)
+    con.compute.create_server(name=name, flavor=flavor, image=image)
+
+
+def delete_server(con, name):
+    server = con.compute.find_server(name)
+    return con.compute.delete_server(server)
+
+
 def get_volume(con):
     result = prettytable.PrettyTable(['name', 'status', 'size'])
     print(con.block_store.volumes)
@@ -40,8 +53,10 @@ def main():
     p.add_argument("-password")
     args = p.parse_args()
     con = create_connection(args.url, "RegionOne", args.project, args.user, args.password)
+    delete_server(con, "vm1")
 #   get_volume(con)
-    print(get_server(con))
+#   print(get_server(con))
+
 
 
 if __name__ == '__main__':

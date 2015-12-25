@@ -48,15 +48,33 @@ def webhooks():
     volume.add_row(['volume2', 'OK', '4'])
 
     # check if the message is the command to get hosts
-    if message == "Hi":
+    com_list = message.spilit()
+
+    if com_list[0] == "Hi":
         sparkmessage.post(TOKEN, person_id, person_email, room_id, "Hi, How are you")
-    elif message == "help":
+    elif com_list[0] == "help":
         sparkmessage.post(TOKEN, person_id, person_email, room_id, HELP)
-    elif message == "server list":
-        reply_msg = oscontroller.get_server(con)
-        sparkmessage.post(TOKEN, person_id, person_email, room_id, reply_msg)
-    elif message == "volume list":
-        sparkmessage.post(TOKEN, person_id, person_email, room_id, volume.get_string())
+    elif com_list[0] == "server":
+        if len(com_list) == 1:
+            sparkmessage.post(TOKEN, person_id, person_email, room_id, "Please add list or create")
+        elif com_list[1] == "list":
+            reply_msg = oscontroller.get_server(con)
+            sparkmessage.post(TOKEN, person_id, person_email, room_id, reply_msg)
+        elif com_list[1] == "create":
+            if len(com_list) == 2:
+                sparkmessage.post(TOKEN, person_id, person_email, room_id, "Please add vm name")
+            else:
+                reply_msg = oscontroller.create_server(con, com_list[2])
+                sparkmessage.post(TOKEN, person_id, person_email, room_id, reply_msg)
+        elif com_list[1] == "delete":
+            if len(com_list) == 2:
+                sparkmessage.post(TOKEN, person_id, person_email, room_id, "Please add vm name")
+            else:
+                reply_msg = oscontroller.delete_server(con, com_list[2])
+                sparkmessage.post(TOKEN, person_id, person_email, room_id, reply_msg)
+    elif com_list[0] == "volume":
+        if com_list[1] == "list":
+            sparkmessage.post(TOKEN, person_id, person_email, room_id, volume.get_string())
     return "OK"
 
 
