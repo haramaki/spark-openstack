@@ -11,7 +11,6 @@ app = Flask(__name__)
 TOKEN = ""
 CON = {}
 HELP = """
-help                  show this message
 server create <name>  create server
 server list           list active servers
 flavor list           list flavors
@@ -41,7 +40,7 @@ def webhooks():
     operator = com_list[0]
 
     if operator == "Hi":
-        sc.send_message("Hi How are you")
+        sc.send_message("How are you")
     elif operator == "help":
         sc.send_message(HELP)
     elif operator == "server":
@@ -50,6 +49,7 @@ def webhooks():
         sc.volume_control(com_list)
     elif operator == "image":
         sc.image_control(com_list)
+    
     return "OK"
 
 

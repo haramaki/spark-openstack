@@ -30,9 +30,10 @@ def get_volume(con):
 
 
 def get_image(con):
-    result = prettytable.PrettyTable(['name', 'status'])
+    result = prettytable.PrettyTable(['name', 'disk_format'])
+    result.align['name'] = 'l'
     for image in con.image.images():
-        result.add_row([image["name"], image["status"]])
+        result.add_row([image["name"], image["disk_format"]])
     return result.get_string()
 
 
