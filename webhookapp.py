@@ -79,14 +79,14 @@ class SparkController:
             if len(com_list) == 2:
                 self.send_message("Please add vm name")
             else:
-                reply_msg = oscontroller.create_server(self.con, com_list[2])
-                self.send_message(reply_msg)
+                oscontroller.create_server(self.con, com_list[2])
+                self.send_message("Server "+com_list[2]+" is created")
         elif com_list[1] == "delete":
             if len(com_list) == 2:
                 self.send_message("Please add vm name")
             else:
-                reply_msg = oscontroller.delete_server(self.con, com_list[2])
-                self.send_message(reply_msg)
+                oscontroller.delete_server(self.con, com_list[2])
+                self.send_message("Server "+com_list[2]+" is deleted")
 
     def volume_control(self, com_list):
         if len(com_list) == 1:
