@@ -8,7 +8,12 @@ def get_server(con):
     for server in con.compute.servers():
         image = con.compute.get_image(server["image"]["id"])["name"]
         flavor = con.compute.get_flavor(server["flavor"]["id"])["name"]
-        result.add_row([server["name"], image, server["status"], flavor, 'net01'])
+        addresses = server["addresses"]
+        for net, address in addresses.items():
+            net_out = net+" = "
+            for addr in address:
+                net_out = net_out+addr["addr"]+" "
+        result.add_row([server["name"], image, server["status"], flavor, net_out])
     return result.get_string()
 
 
@@ -51,6 +56,7 @@ def create_connection(auth_url, region, project_name, username, password):
     )
 
 
+
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("-url")
@@ -59,9 +65,9 @@ def main():
     p.add_argument("-password")
     args = p.parse_args()
     con = create_connection(args.url, "RegionOne", args.project, args.user, args.password)
-    print(get_image(con))
-#   get_volume(con)
-#   print(get_server(con))
+#    print(get_image(con))
+#    get_volume(con)
+    print(get_server(con))
 
 
 if __name__ == '__main__':
