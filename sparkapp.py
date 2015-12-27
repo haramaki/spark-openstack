@@ -4,7 +4,7 @@ import requests
 app = Flask(__name__)
 
 CLIENT_ID = "C691218311f03a9a1b4e69350b96298fbf2b0b5e66678ebd50a3ce3fcfee15730"
-CLIENT_SECRET = "27ec6e51762a97bd32412f5324c6158a619dbd600de3f1eb41d1524a5a4d13ef"
+CLIENT_SECRET = "14f1d4d866944896ba51c1b20408a361f616ebc8f1a2ba8eea92918bea2008fc"
 REDIRECT_URI = "http://38.84.67.164:8080/redirect"
 
 @app.route('/')
@@ -27,7 +27,8 @@ def redirect():
     code = request.args.get('code')
     payload = {'grant_type': 'authorization_code', 'client_id': CLIENT_ID, 'client_secret': CLIENT_SECRET,
                'code ': code, 'redirect_uri': REDIRECT_URI}
-    r = requests.post(url="https://api.ciscospark.com/v1/access_token", data=payload)
+    headers = {"Content-Type": "application/x-www-form-urlencoded"}
+    r = requests.post(url="https://api.ciscospark.com/v1/access_token", data=payload, headers=headers)
     json = r.json()
     print json
     return "your access key is " + r.text
