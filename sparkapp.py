@@ -10,7 +10,7 @@ REDIRECT_URI = "http://38.84.67.164:8080/redirect"
 @app.route('/')
 def auth_start():
     show_auth = """
-<form action="https://api.ciscospark.com/v1/authorize" method="post">
+<form action="https://api.ciscospark.com/v1/authorize" method="get">
 <input type="hidden" name="response_type" value="code" />
 <input type="hidden" name="client_id" value="C691218311f03a9a1b4e69350b96298fbf2b0b5e66678ebd50a3ce3fcfee15730" />
 <input type="hidden" name="redirect_uri" value="http://38.84.67.164:8080/redirect" />
