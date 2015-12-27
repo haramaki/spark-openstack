@@ -28,6 +28,14 @@ def delete_server(con, name):
     return con.compute.delete_server(server)
 
 
+def get_flavor(con):
+    result = prettytable.PrettyTable(['name', 'vcpus', 'ram', 'disk'])
+    result.align['name'] = 'l'
+    for flavor in con.compute.flavors():
+        result.add_row([flavor['name'], flavor['vcpus'], flavor['ram'], flavor['disk']])
+    return result.get_string()
+
+
 def get_volume(con):
     result = prettytable.PrettyTable(['name', 'status', 'size'])
     print(con.block_store.volumes)
@@ -67,7 +75,7 @@ def main():
     con = create_connection(args.url, "RegionOne", args.project, args.user, args.password)
 #    print(get_image(con))
 #    get_volume(con)
-    print(get_server(con))
+    print(get_flavor(con))
 
 
 if __name__ == '__main__':

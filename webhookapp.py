@@ -51,6 +51,8 @@ def webhooks():
         sc.volume_control(com_list)
     elif operator == "image":
         sc.image_control(com_list)
+    elif operator == "flavor":
+        sc.flavor_control(com_list)
     
     return "OK"
 
@@ -104,6 +106,13 @@ class SparkController:
             self.send_message("Please add list")
         elif com_list[1] == "list":
             reply_msg = oscontroller.get_image(self.con)
+            self.send_message(reply_msg)
+
+    def flavor_control(self, com_list):
+        if len(com_list) == 1:
+            self.send_message("Please add list")
+        elif com_list[1] == "list":
+            reply_msg = oscontroller.get_flavor(self.con)
             self.send_message(reply_msg)
 
 
