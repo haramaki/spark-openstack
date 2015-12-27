@@ -4,7 +4,8 @@ from openstack import profile, connection
 
 
 def get_server(con):
-    result = prettytable.PrettyTable(['name', 'image', 'status', 'flavor', 'networks'])
+    svr_list = ""
+#    result = prettytable.PrettyTable(['name', 'image', 'status', 'flavor', 'networks'])
     for server in con.compute.servers():
         image = con.compute.get_image(server["image"]["id"])["name"]
         flavor = con.compute.get_flavor(server["flavor"]["id"])["name"]
@@ -13,8 +14,10 @@ def get_server(con):
             net_out = net+" = "
             for addr in address:
                 net_out = net_out+addr["addr"]+" "
-        result.add_row([server["name"], image, server["status"], flavor, net_out])
-    return result.get_string()
+
+        svr_list = svr_list + "* " + server["name"] + " / " + server["status"] + " / " + net_out + "\n"
+#       result.add_row([server["name"], image, server["status"], flavor, net_out])
+    return svr_list
 
 
 def create_server(con, name):
@@ -29,11 +32,13 @@ def delete_server(con, name):
 
 
 def get_flavor(con):
-    result = prettytable.PrettyTable(['name', 'vcpus', 'ram', 'disk'])
-    result.align['name'] = 'l'
+    result = ""
     for flavor in con.compute.flavors():
-        result.add_row([flavor['name'], flavor['vcpus'], flavor['ram'], flavor['disk']])
-    return result.get_string()
+        result = result + "* " + flavor['name']
+        result = result + " / " + str(flavor['vcpus']) + " cpu"
+        result = result + " / " + str(flavor['ram']) + " MB"
+        result = result + " / " + str(flavor['disk']) + " GB" + "\n"
+    return result
 
 
 def get_volume(con):
@@ -43,11 +48,10 @@ def get_volume(con):
 
 
 def get_image(con):
-    result = prettytable.PrettyTable(['name', 'disk_format'])
-    result.align['name'] = 'l'
+    result = ""
     for image in con.image.images():
-        result.add_row([image["name"], image["disk_format"]])
-    return result.get_string()
+        result = result + "* " + image['name'] + " / " + image["disk_format"] + "\n"
+    return result
 
 
 def create_connection(auth_url, region, project_name, username, password):
@@ -75,7 +79,7 @@ def main():
     con = create_connection(args.url, "RegionOne", args.project, args.user, args.password)
 #    print(get_image(con))
 #    get_volume(con)
-    print(get_flavor(con))
+    print(get_image(con))
 
 
 if __name__ == '__main__':
