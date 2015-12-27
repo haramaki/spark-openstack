@@ -12,8 +12,9 @@ TOKEN = ""
 CON = {}
 HELP = """
 +----------
-server create <name>  create server
 server list           list active servers
+server create <name>  create server
+server delete <name>  delete server
 flavor list           list flavors
 image  list           list image
 volume list           list volumes
