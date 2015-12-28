@@ -3,12 +3,9 @@ import argparse
 from openstack import profile, connection
 
 
-def get_server(con):
+def list_server(con):
     svr_list = ""
-#    result = prettytable.PrettyTable(['name', 'image', 'status', 'flavor', 'networks'])
     for server in con.compute.servers():
-        image = con.compute.get_image(server["image"]["id"])["name"]
-        flavor = con.compute.get_flavor(server["flavor"]["id"])["name"]
         addresses = server["addresses"]
         for net, address in addresses.items():
             net_out = net+" = "
@@ -16,8 +13,30 @@ def get_server(con):
                 net_out = net_out+addr["addr"]+" "
 
         svr_list = svr_list + "* " + server["name"] + " / " + server["status"] + " / " + net_out + "\n"
-#       result.add_row([server["name"], image, server["status"], flavor, net_out])
     return svr_list
+
+
+def show_server(con, name):
+    sec_out = ""
+    id = con.compute.find_server(name)["id"]
+    server = con.compute.get_server(id)
+    print(server)
+    addresses = server["addresses"]
+    for net, address in addresses.items():
+        net_out = net+" = "
+        for addr in address:
+            net_out = net_out+addr["addr"]+" "
+    secgroups = server["security_groups"]
+    for secgroup in secgroups:
+        sec_out = sec_out + secgroup["name"] + " "
+
+    result = "name : " + server["name"] + "\n"
+    result = result + "status : " + server["status"] + "\n"
+    result = result + "image : " + con.compute.get_image(server["image"]["id"])["name"] + "\n"
+    result = result + "flavor : " + con.compute.get_flavor(server["flavor"]["id"])["name"] + "\n"
+    result = result + "netowrk : " + net_out + "\n"
+    result = result + "sec_group : " + sec_out
+    return result
 
 
 def create_server(con, name):
@@ -79,7 +98,7 @@ def main():
     con = create_connection(args.url, "RegionOne", args.project, args.user, args.password)
 #    print(get_image(con))
 #    get_volume(con)
-    print(get_image(con))
+    print(show_server(con, "netone"))
 
 
 if __name__ == '__main__':

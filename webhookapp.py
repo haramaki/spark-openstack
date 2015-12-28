@@ -75,18 +75,25 @@ class SparkController:
         sparkmessage.post(self.token, person_id, person_email, room_id, msg)
 
     def server_control(self, com_list):
+        operator = com_list[1]
         if len(com_list) == 1:
             self.send_message("Please add list or create or delete")
-        elif com_list[1] == "list":
-            reply_msg = oscontroller.get_server(self.con)
+        elif operator == "list":
+            reply_msg = oscontroller.list_server(self.con)
             self.send_message(reply_msg)
-        elif com_list[1] == "create":
+        elif operator == "show":
+            if len(com_list) == 2:
+                self.send_message("Please add vm name")
+            else:
+                reply_msg = oscontroller.show_server(self.con, com_list[2])
+                self.send_message(reply_msg)
+        elif operator == "create":
             if len(com_list) == 2:
                 self.send_message("Please add vm name")
             else:
                 oscontroller.create_server(self.con, com_list[2])
                 self.send_message("Server "+com_list[2]+" is created")
-        elif com_list[1] == "delete":
+        elif operator == "delete":
             if len(com_list) == 2:
                 self.send_message("Please add vm name")
             else:
