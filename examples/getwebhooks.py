@@ -35,4 +35,5 @@ def main():
     print(json.dumps(response_json ,sort_keys=True, indent=4))
 
 # run main function
-main()
+if __name__ == '__main__':
+    main()

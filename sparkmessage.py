@@ -1,64 +1,126 @@
 # import the requests library so we can use it to make REST calls
 import requests
+import prettytable
 
 # disable warnings about using certificate verification
 requests.packages.urllib3.disable_warnings()
 
+
 # the main function
-def post(token, person_id, person_email, room_id, text):
-    # define a variable for the hostname of Spark
-    hostname = "api.ciscospark.com"
+class SparkController:
+    def __init__(self, os, json, token):
+        self.os = os
+        self.token = token
+        self.json = json
 
-    # login to developer.ciscospark.com and copy your access token here
-    # Never hard-code access token in production environment
-    token = "Bearer " + token
+    def get_message(self):
+        message_id = self.json["data"]["id"]
+        return self.get(message_id)
 
-    # add authorization to the header
-    header = {"Authorization": "%s" % token, "content-type": "application/json"}
+    def send_message(self, msg):
+        person_id = self.json["data"]["personId"]
+        person_email = self.json["data"]["personEmail"]
+        room_id = self.json["data"]["roomId"]
+        self.post(person_id, person_email, room_id, msg)
 
-    # specify request url
-    post_message_url = "https://" + hostname + "/hydra/api/v1/messages"
+    def server_control(self, com_list):
+        operator = com_list[1]
+        if len(com_list) == 1:
+            self.send_message("Please add list or create or delete")
+        elif operator == "list":
+            reply_msg = self.os.list_server()
+            self.send_message(reply_msg)
+        elif operator == "show":
+            if len(com_list) == 2:
+                self.send_message("Please add vm name")
+            else:
+                reply_msg = self.os.show_server(com_list[2])
+                self.send_message(reply_msg)
+        elif operator == "create":
+            if len(com_list) == 2:
+                self.send_message("Please add vm name")
+            else:
+                self.os.create_server(com_list[2])
+                self.send_message("Server "+com_list[2]+" is created")
+        elif operator == "delete":
+            if len(com_list) == 2:
+                self.send_message("Please add vm name")
+            else:
+                self.os.delete_server(com_list[2])
+                self.send_message("Server "+com_list[2]+" is deleted")
 
-    # create message in Spark room
-    payload = {
-        "personId": person_id,
-        "personEmail": person_email,
-        "roomId": room_id,
-        "text": text
-    }
+    def volume_control(self, com_list):
+        if len(com_list) == 1:
+            self.send_message("Please add list")
+        elif com_list[1] == "list":
+            volume = prettytable.PrettyTable(['name', 'status', 'size'])
+            volume.add_row(['volume1', 'OK', '2'])
+            volume.add_row(['volume2', 'OK', '4'])
+            self.send_message(volume.get_string())
 
-    # create POST request do not verify SSL certificate for simplicity of this example
-    api_response = requests.post(post_message_url, json=payload, headers=header, verify=False)
+    def image_control(self, com_list):
+        if len(com_list) == 1:
+            self.send_message("Please add list")
+        elif com_list[1] == "list":
+            reply_msg = self.os.get_image()
+            self.send_message(reply_msg)
 
-    # get the response status code
-    response_status = api_response.status_code
+    def flavor_control(self, com_list):
+        if len(com_list) == 1:
+            self.send_message("Please add list")
+        elif com_list[1] == "list":
+            reply_msg = self.os.get_flavor()
+            self.send_message(reply_msg)
 
-    # return the text value
-    print(response_status)
-
-def get(token, message_id):
+    def post(self, person_id, person_email, room_id, text):
         # define a variable for the hostname of Spark
-    hostname = "api.ciscospark.com"
+        hostname = "api.ciscospark.com"
+        token = "Bearer " + self.token
+        # add authorization to the header
+        header = {"Authorization": "%s" % token, "content-type": "application/json"}
 
-    # login to developer.ciscospark.com and copy your access token here
-    # Never hard-code access token in production environment
-    token = "Bearer "+token
+        # specify request url
+        post_message_url = "https://" + hostname + "/hydra/api/v1/messages"
 
-    # add authorization to the header
-    header = {"Authorization": "%s" % token}
+        # create message in Spark room
+        payload = {
+            "personId": person_id,
+            "personEmail": person_email,
+            "roomId": room_id,
+            "text": text
+        }
 
-    # create request url using message ID
-    get_rooms_url = "https://" + hostname + "/v1/messages/" + message_id
+        # create POST request do not verify SSL certificate for simplicity of this example
+        api_response = requests.post(post_message_url, json=payload, headers=header, verify=False)
 
-    # send the GET request and do not verify SSL certificate for simplicity of this example
-    api_response = requests.get(get_rooms_url, headers=header, verify=False)
+        # get the response status code
+        response_status = api_response.status_code
 
-    # parse the response in json
-    response_json = api_response.json()
+        # return the text value
+        print(response_status)
 
-    # get the text value from the response
-    text = response_json["text"]
+    def get(self, message_id):
+        # define a variable for the hostname of Spark
+        hostname = "api.ciscospark.com"
 
-    # return the text value
-    return text
+        # login to developer.ciscospark.com and copy your access token here
+        # Never hard-code access token in production environment
+        token = "Bearer "+self.token
 
+        # add authorization to the header
+        header = {"Authorization": "%s" % token}
+
+        # create request url using message ID
+        get_rooms_url = "https://" + hostname + "/v1/messages/" + message_id
+
+        # send the GET request and do not verify SSL certificate for simplicity of this example
+        api_response = requests.get(get_rooms_url, headers=header, verify=False)
+
+        # parse the response in json
+        response_json = api_response.json()
+
+        # get the text value from the response
+        text = response_json["text"]
+
+        # return the text value
+        return text

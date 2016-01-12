@@ -1,14 +1,13 @@
 # import the requests library so we can use it to make REST calls
 import requests
 import argparse
-import json
 
 
 # the main function
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("-token", default="")
-    p.add_argument("-webhook", default="")
+    p.add_argument("-token", required=True)
+    p.add_argument("-title", required=True)
     args = p.parse_args()
     # define a variable for the hostname of Spark
     hostname = "api.ciscospark.com"
@@ -24,19 +23,20 @@ def main():
     requests.packages.urllib3.disable_warnings()
 
     # create request url
-    delete_webhooks_url = "https://" + hostname + "/v1/webhooks"
+    post_room_url = "https://" + hostname + "/v1/rooms"
 
-    # create payroad
-    payload = {"webhookId": args.webhook}
+    payload = {"title": args.title}
 
-    # send GET request and do not verify SSL certificate for simplicity of this example
-    api_response = requests.delete(delete_webhooks_url, headers=header, verify=True, params=payload)
-    print(api_response.url)
+    # send the POST request resource and do not verify SSL certificate for simplicity of this example
+    api_response = requests.post(post_room_url, json=payload, headers=header, verify=False)
 
-    response_status = api_response.status_code
+    # parse the response in json
+    response_json = api_response.json()
 
-    # print the status code
-    print(response_status)
+    # print the response
+    print(response_json)
+
 
 # run main function
-main()
+if __name__ == '__main__':
+    main()
