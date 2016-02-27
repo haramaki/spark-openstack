@@ -18,6 +18,10 @@ https://developer.ciscospark.com/
 After Login by Spark account click right upper your icon and get token. 
 
 ## Post Message
+Before starting Cisco Spark / OpenStack integration,
+Test your Token by *postmessage.py* script.
+* ROOM is Spark ROOM Name or ID.
+* TEXT is message post to Cisco Spark 
 
 ```
 # python examples/postmessage.py -token TOKEN -room ROOM -text TEXT
