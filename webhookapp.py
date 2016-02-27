@@ -22,9 +22,8 @@ volume list           list volumes
 
 # Index page will trigger index() function
 @app.route('/')
-def index():cd 
+def index():
     return 'Hello World'
-
 
 # Webhook page will trigger webhooks() function
 @app.route("/webhook", methods=['POST'])
@@ -68,4 +67,3 @@ if __name__ == "__main__":
     TOKEN = args.token
     print (TOKEN)
     app.run(host="0.0.0.0", port=8000)
-
