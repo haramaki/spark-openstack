@@ -20,6 +20,7 @@ After Login by Spark account click right upper your icon and get token.
 ## Post Message
 Before starting Cisco Spark / OpenStack integration,
 Test your Token by *postmessage.py* script.
+
 * ROOM is Spark ROOM Name or ID.
 * TEXT is message post to Cisco Spark 
 
@@ -29,6 +30,11 @@ Test your Token by *postmessage.py* script.
 
 ## Post WebHook
 Create WebHook.
+
+* ROOM : Any Message is created at this room, WebHook is triggered
+* URL : WebHook destination URL. URL should be public hostname or Global IP of OpenStack Webhook App running.
+
+OpenStack integration app use following URL [http://GLOBAL_IP:8000/webhook]
 
 ```
 # python examples/postwebhook.py -token TOKEN -room ROOM -url URL
