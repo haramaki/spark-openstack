@@ -1,8 +1,14 @@
 # spark-openstack
-
-# Getting Started
 This is Cisco Spark and OpenStack integration software based on Python.
 You can create and list VM on OpenStack from Cisco Spark.
+
+# Getting Started
+
+1. Clone repository
+1. Get Cisco Spark User Token
+1. Run script and post WebHook create request and Cisco Spark
+1. Start webhook app and app wait trigger WebHook.
+1. After app start post message to pre-confugured room.
 
 ## Clone this repository
 
